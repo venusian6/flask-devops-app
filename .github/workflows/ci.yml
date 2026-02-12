@@ -3,6 +3,12 @@ name: DevSecOps Pipeline
 on:
   push:
     branches: main
+  workflow_dispatch:
+    inputs:
+      run_scan:
+        description: "Run Trivy Scan?"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
@@ -37,12 +43,14 @@ jobs:
         run: echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Build Docker Image
+
         run: docker build -t flask-devops-app:${{ steps.vars.outputs.TAG }} .
 
       - name: Tag Image
         run: docker tag flask-devops-app:${{ steps.vars.outputs.TAG }} ${{ secrets.DOCKER_USERNAME }}/flask-devops-app:${{ steps.vars.outputs.TAG }}
 
       - name: Scan Docker Image
+        if: github.event.inputs.run_scan == 'true'
         run: trivy image flask-devops-app:${{ steps.vars.outputs.TAG }}
 
       - name: Login to DockerHub
@@ -54,7 +62,7 @@ jobs:
       - name: Checkout Manifest Repo
         uses: actions/checkout@v3
         with:
-          repository: venusian6/flask-k8s-manifests.git
+          repository: venusian6/flask-k8s-manifests
           token: ${{ secrets.MANIFEST_REPO_TOKEN }}
           path: manifests
           ref: main
