@@ -57,3 +57,4 @@ jobs:
           repository: venusian6/flask-k8s-manifests.git
           token: ${{ secrets.MANIFEST_REPO_TOKEN }}
           path: manifests
+          ref: main
