@@ -1,20 +1,20 @@
 from flask import Flask, jsonify
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
-
 import logging
 
+app = Flask(__name__)
 
+# Logging setup
 logging.basicConfig(level=logging.INFO)
 
+# Prometheus metrics
+REQUEST_COUNT = Counter('app_requests_total', 'Total number of requests')
 
-REQUEST_COUNT = Counter('app_request_total','Total number of requests')
-
-
-@app.routr("/")
+@app.route("/")
 def home():
     REQUEST_COUNT.inc()
     logging.info("Home endpoint was called")
-     return jsonify({"message": "Flask DevOps App Running 🚀"})
+    return jsonify({"message": "Flask DevOps App Running 🚀"})
 
 @app.route("/health")
 def health():
