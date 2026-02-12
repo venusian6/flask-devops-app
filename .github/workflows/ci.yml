@@ -54,6 +54,6 @@ jobs:
       - name: Checkout Manifest Repo
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/venusian6/flask-k8s-manifests.git
+          repository: venusian6/flask-k8s-manifests.git
           token: ${{ secrets.GITHUB_TOKEN }}
           path: manifests
