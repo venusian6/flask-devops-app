@@ -66,3 +66,16 @@ jobs:
           token: ${{ secrets.MANIFEST_REPO_TOKEN }}
           path: manifests
           ref: main
+
+      - name: Update Image Tag
+        run: |
+          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/flask-devops-app:${{ steps.vars.outputs.TAG }}|" manifests/deployment.yaml
+
+      - name: Commit and Push Changes
+        run: |
+          cd manifests
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update image tag to ${{ steps.vars.outputs.TAG }}"
+          git push
